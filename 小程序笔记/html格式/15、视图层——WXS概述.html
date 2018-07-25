@@ -1,0 +1,131 @@
+<html>
+<head>
+  <title>15、视图层——WXS概述</title>
+  <basefont face="微软雅黑" size="2" />
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="exporter-version" content="Evernote Windows/304720 (zh-CN, DDL); Windows/10.0.16299 (Win64);"/>
+  <style>
+    body, td {
+      font-family: 微软雅黑;
+      font-size: 12pt;
+    }
+  </style>
+</head>
+<body>
+<a name="9222"/>
+<h1>15、视图层——WXS概述</h1>
+
+<div>
+<span><div><span style="font-size: 32px;"><b>15、视图层——WXS概述</b></span></div><div><hr/></div><div><span style="font-size: 24px;"><b>（1）概述</b></span></div><div><hr/></div><ul><li>WXS（WeiXin Script）是小程序的一套脚本语言，<span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">结合 WXML，可以构建出页面的结构</span></li><li>wxs 不依赖于运行时的基础库版本，<span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">可以在所有版本的小程序中运行</span></li><li>wxs 与 javascript 是不同的语言，有自己的语法，并<span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">不和 javascript 一致</span></li><li><span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">wxs 的运行环境和其他 javascript 代码是隔离的</span>，wxs 中不能调用其他 javascript 文件中定义的函数，也不能调用小程序提供的API</li><li>wxs 函数<span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">不能作为组件的事件回调</span></li><li>由于运行环境的差异，在 <span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">iOS 设备上小程序内的 wxs 会比 javascript 代码快 2 ~ 20 倍</span></li><li>在 android 设备上二者运行效率无差异</li></ul><div><br/></div><div><span style="font-size: 24px;"><b>（2）基本用法</b></span></div><div><hr/></div><ul><li>暴露一个变量</li></ul><div style="-en-codeblock: true; box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace; font-size: 12px; color: rgb(51, 51, 51); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.14902); background-position: initial initial; background-repeat: initial initial;"><div>&lt;!--logs.wxml--&gt;</div><div><br/></div><div>&lt;wxs module=&quot;m1&quot;&gt;</div><div>   var msg = &quot;hello world&quot;</div><div><span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">   module.exports.message = msg</span></div><div>&lt;/wxs&gt;</div><div><br/></div><div>&lt;view&gt;{{m1.message}}&lt;/view&gt;</div></div><ul><li>暴露一个方法</li></ul><div style="-en-codeblock: true; box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace; font-size: 12px; color: rgb(51, 51, 51); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.14902); background-position: initial initial; background-repeat: initial initial;"><div>&lt;!--logs.wxml--&gt;</div><div>&lt;!-- 下面的 getMax 函数，接受一个数组，且返回数组中最大的元素的值 --&gt;</div><div>&lt;wxs module=&quot;m1&quot;&gt;</div><div>   var getMax = function(arr) {</div><div>   var max = undefined;</div><div>   for (var i = 0; i &lt; arr.length; ++i) {</div><div>      max = max === undefined ?</div><div>        arr[i] :</div><div>        (max &gt;= arr[i] ? max : arr[i]);</div><div>   }</div><div>   return max;</div><div>   }</div><div>   module.exports.getMax = getMax</div><div>&lt;/wxs&gt;</div><div><br/></div><div>&lt;view&gt;{{m1.getMax([1,2,3,56])}}&lt;/view&gt;</div></div><div><br/></div><div><span style="font-size: 24px;"><b>（3）WXS变量</b></span></div><div><hr/></div><ul><li>WXS 中的变量均为<span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">值的引用</span></li><li>没有声明的变量直接赋值使用，会被定义为<span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">全局变量</span></li><li>- 如果只声明变量而不赋值，则默认值为 <span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">undefined</span></li><li>- var表现与javascript一致，会有变量提升</li></ul><div><br/></div><div style="-en-codeblock: true; box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace; font-size: 12px; color: rgb(51, 51, 51); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.14902); background-position: initial initial; background-repeat: initial initial;"><div>var foo = 1;<br/>
+var bar = &quot;hello world&quot;;</div><div>var i; // i === <span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">undefined</span></div></div><ul><li>变量命名规则
+<ul><li>首字符必须是：字母（a-zA-Z），下划线（_）</li><li>剩余字符可以是：字母（a-zA-Z），下划线（_）， 数字（0-9）</li></ul></li><li>以下标识符不能作为变量名</li></ul><div><br/></div><div style="-en-codeblock: true; box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace; font-size: 12px; color: rgb(51, 51, 51); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.14902); background-position: initial initial; background-repeat: initial initial;"><div>delete<br/>
+void<br/>
+typeof<br/><br/>
+null<br/>
+undefined<br/>
+NaN<br/>
+Infinity<br/>
+var<br/><br/>
+if<br/>
+else<br/><br/>
+true<br/>
+false<br/><br/>
+require<br/><br/>
+this<br/>
+function<br/>
+arguments<br/>
+return<br/><br/>
+for<br/>
+while<br/>
+do<br/>
+break<br/>
+continue<br/>
+switch<br/>
+case<br/>
+default</div></div><div><br/></div><div><span style="font-size: 24px;"><b>（4）注释</b></span></div><div><hr/></div><ul><li>三种方式注释</li></ul><div style="-en-codeblock: true; box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace; font-size: 12px; color: rgb(51, 51, 51); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.14902); background-position: initial initial; background-repeat: initial initial;"><div>&lt;wxs module=&quot;sample&quot;&gt;<br/><span style="color: rgb(255, 0, 0);"><b><span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">// 方法一：单行注释</span></b></span><br/><br/><span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;"><b><span style="color: rgb(255, 0, 0);">/*<br/>
+方法二：多行注释<br/>
+*/<br/></span></b></span><br/><span style="color: rgb(255, 0, 0);"><b><span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">/*</span></b></span><br/>
+方法三：结尾注释。即从 <span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">/*</span> <span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">开始往后的所有 WXS 代码均被注释</span><br/><br/>
+var a = 1;<br/>
+var b = 2;<br/>
+var c = &quot;fake&quot;;<br/><br/>
+&lt;/wxs&gt;</div></div><div><br/></div><div><span style="font-size: 24px;"><b>（5）运算符</b></span></div><div><hr/></div><ul><li>基本运算符</li></ul><div style="-en-codeblock: true; box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace; font-size: 12px; color: rgb(51, 51, 51); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.14902); background-position: initial initial; background-repeat: initial initial;"><div>var a = 10, b = 20;<br/><br/></div><div>// 加法运算</div><div>console.log(30 === a <span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">+</span> b);</div><div>// 减法运算</div><div>console.log(-10 === a <span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">-</span> b);</div><div>// 乘法运算</div><div>console.log(200 === a <span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">*</span> b);</div><div>// 除法运算</div><div>console.log(0.5 === a <span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">/</span> b);//不是求商</div><div>// 取余运算</div><div>console.log(10 === a <span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">%</span> b);</div><div><br/></div><div>var a = '.w' , b = 'xs';</div><div><br/></div><div>// 加法运算（+）也可以用作字符串的拼接</div><div>// 字符串拼接console.log('.wxs' === a + b);</div></div><ul><li>一元运算符</li></ul><div style="-en-codeblock: true; box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace; font-size: 12px; color: rgb(51, 51, 51); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.14902); background-position: initial initial; background-repeat: initial initial;"><div>var a = 10, b = 20;</div><div><br/></div><div>// 自增运算</div><div>console.log(10 === a++);//true</div><div>console.log(12 === ++a);//true</div><div>// 自减运算</div><div>console.log(12 === a--);//true</div><div>console.log(10 === --a);//true</div><div>// 正值运算</div><div>console.log(10 === +a);//true</div><div>// 负值运算</div><div>console.log(0 - 10 === -a);//true</div><div>// 否运算</div><div><span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">console.log(-11 === ~a);//true 取反-1</span></div><div>// 取反运算</div><div>console.log(false === !a);//true</div><div>// delete 运算</div><div>console.log(<span style="color: rgb(255, 0, 0);"><b><span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">true === delete a.fake</span></b></span>);//true</div><div>console.log(a)</div><div>// void 运算</div><div>console.log(<span style="color: rgb(255, 0, 0);"><b><span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">undefined === void a</span></b></span>);//true</div><div>// typeof 运算</div><div>console.log(<span style="color: rgb(255, 0, 0);"><b><span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">&quot;number&quot; === typeof a</span></b></span>);//true</div></div><ul><li>位运算符</li></ul><div style="-en-codeblock: true; box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace; font-size: 12px; color: rgb(51, 51, 51); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.14902); background-position: initial initial; background-repeat: initial initial;"><div>var a = 10, b = 20;<br/><br/></div><div>// 左移运算</div><div>console.log(80 === (a &lt;&lt; 3));</div><div>// 无符号右移运算</div><div>console.log(2 === (a &gt;&gt; 2));</div><div>// 带符号右移运算</div><div>console.log(2 === (<span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">a &gt;&gt;&gt; 2</span>));</div><div>// 与运算</div><div>console.log(2 === (a &amp; 3));</div><div>// 异或运算</div><div>console.log(9 === (a ^ 3));</div><div>// 或运算</div><div>console.log(11 === (a | 3));</div></div><ul><li>比较运算符</li></ul><div style="-en-codeblock: true; box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace; font-size: 12px; color: rgb(51, 51, 51); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.14902); background-position: initial initial; background-repeat: initial initial;"><div>var a = 10, b = 20;<br/><br/></div><div>// 小于</div><div>console.log(true === (a &lt; b));</div><div>// 大于</div><div>console.log(false === (a &gt; b));</div><div>// 小于等于</div><div>console.log(true === (a &lt;= b));</div><div>// 大于等于</div><div>console.log(false === (a &gt;= b));</div></div><ul><li>等值运算符</li></ul><div style="-en-codeblock: true; box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace; font-size: 12px; color: rgb(51, 51, 51); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.14902); background-position: initial initial; background-repeat: initial initial;"><div>var a = 10, b = 20;<br/><br/></div><div>// 等号</div><div>console.log(false === (a == b));</div><div>// 非等号</div><div>console.log(true === (a != b));</div><div>// 全等号</div><div>console.log(false === (a === b));</div><div>// 非全等号</div><div>console.log(true === (a !== b));</div></div><ul><li>赋值运算符</li></ul><div style="-en-codeblock: true; box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace; font-size: 12px; color: rgb(51, 51, 51); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.14902); background-position: initial initial; background-repeat: initial initial;"><div>var a = 10;<br/><br/>
+a = 10; a *= 10;<br/>
+console.log(100 === a);<br/>
+a = 10; a /= 5;<br/>
+console.log(2 === a);<br/>
+a = 10; a %= 7;<br/>
+console.log(3 === a);<br/>
+a = 10; a += 5;<br/>
+console.log(15 === a);<br/>
+a = 10; a -= 11;<br/>
+console.log(-1 === a);<br/>
+a = 10; <span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">a &lt;&lt;= 10</span>;<br/>
+console.log(10240 === a);<br/>
+a = 10; <span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">a &gt;&gt;= 2</span>;<br/>
+console.log(2 === a);<br/>
+a = 10; <span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">a &gt;&gt;&gt;= 2</span>;<br/>
+console.log(2 === a);<br/>
+a = 10; a <span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">&amp;=</span> 3;<br/>
+console.log(2 === a);<br/>
+a = 10; a <span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">^=</span> 3;<br/>
+console.log(9 === a);<br/>
+a = 10; a <span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">|=</span> 3;<br/>
+console.log(11 === a);</div></div><ul><li>二元逻辑运算符</li></ul><div style="-en-codeblock: true; box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace; font-size: 12px; color: rgb(51, 51, 51); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.14902); background-position: initial initial; background-repeat: initial initial;"><div>var a = 10, b = 20;<br/><br/>
+// 逻辑与console.log(20 === (a &amp;&amp; b));<br/>
+// 逻辑或console.log(10 === (a || b));</div></div><ul><li>三元运算符</li></ul><div style="-en-codeblock: true; box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace; font-size: 12px; color: rgb(51, 51, 51); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.14902); background-position: initial initial; background-repeat: initial initial;"><div>var a = 10, b = 20;<br/><br/>
+//条件运算符console.log(20 === (<span style="color: rgb(255, 0, 0);"><b><span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">a &gt;= 10 ? a + 10 : b + 10</span></b></span>));<br/>
+//逗号运算符console.log(20 === (a, b));</div></div><div><br/></div><div>（6）语句</div><div><hr/></div><ul><li>if语句</li></ul><div style="-en-codeblock: true; box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace; font-size: 12px; color: rgb(51, 51, 51); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.14902); background-position: initial initial; background-repeat: initial initial;"><div>// if ...<br/><br/>
+if (表达式) 语句;<br/><br/>
+if (表达式)<br/>
+  语句;<br/><br/>
+if (表达式) {<br/>
+  代码块;<br/>
+}<br/><br/><br/>
+// if ... else<br/><br/><span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">if (表达式) 语句;<br/>
+else 语句;<br/></span><br/><span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">if (表达式)<br/>
+  语句;<br/>
+else<br/>
+  语句;<br/></span><br/>
+if (表达式) {<br/>
+  代码块;<br/>
+} else {<br/>
+  代码块;<br/>
+}<br/><br/>
+// if ... else if ... else ...<br/><br/>
+if (表达式) {<br/>
+  代码块;<br/>
+} else if (表达式) {<br/>
+  代码块;<br/>
+} else if (表达式) {<br/>
+  代码块;<br/>
+} else {<br/>
+  代码块;<br/>
+}</div></div><div><br/></div><ul><li>switch语句
+<ul><li>default 分支可以省略不写。</li><li>case 关键词后面只能使用：<span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">变量，数字，字符串</span></li></ul></li></ul><div style="-en-codeblock: true; box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace; font-size: 12px; color: rgb(51, 51, 51); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.14902); background-position: initial initial; background-repeat: initial initial;"><div>var exp = 10;<br/><br/>
+switch ( exp ) {<br/>
+case &quot;10&quot;:<br/>
+  console.log(&quot;string 10&quot;);<br/>
+  break;<br/><span style="background-color: rgb(255, 250, 165);-evernote-highlight:true;">case 10:</span><br/>
+  console.log(&quot;number 10&quot;);<br/>
+  break;<br/>
+case exp:<br/>
+  console.log(&quot;var exp&quot;);<br/>
+  break;<br/>
+default:<br/>
+  console.log(&quot;default&quot;);<br/>
+}</div></div><div><br/></div><ul><li>for语句
+<ul><li>支持使用 break，continue 关键词</li></ul></li></ul><div style="-en-codeblock: true; box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace; font-size: 12px; color: rgb(51, 51, 51); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.14902); background-position: initial initial; background-repeat: initial initial;"><div>for (语句; 语句; 语句)<br/>
+  语句;<br/><br/>
+for (语句; 语句; 语句) {<br/>
+  代码块;<br/>
+}</div></div><div><br/></div><ul><li>while语句
+<ul><li>支持使用 break，continue 关键词</li></ul></li></ul><div style="-en-codeblock: true; box-sizing: border-box; padding: 8px; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace; font-size: 12px; color: rgb(51, 51, 51); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; background-color: rgb(251, 250, 248); border: 1px solid rgba(0, 0, 0, 0.14902); background-position: initial initial; background-repeat: initial initial;"><div>while (表达式)<br/>
+  语句;<br/><br/>
+while (表达式){<br/>
+  代码块;<br/>
+}<br/><br/>
+do {<br/>
+  代码块;<br/>
+} while (表达式)</div></div><div><br/></div></span>
+</div></body></html> 
